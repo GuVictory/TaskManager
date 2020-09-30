@@ -153,6 +153,15 @@ class TasksViewSet(viewsets.ModelViewSet):
         except:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['GET'])
+    def sort_by_date_desc_tasks(self, request):
+        try:
+            tasks = self.get_user_tasks(request).order_by('-finish_date')
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
     @action(detail=True, methods=['GET'])
     def task_history(self, request, pk=None):
         try:

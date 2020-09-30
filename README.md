@@ -271,3 +271,38 @@ Task manager API
 ]
 ```
 ***
+### Получение списка всех задач отсортированных по убаванию даты завершения
+* Url: /sort_by_date_desc_tasks/
+* Method: GET
+* В Headers необходима авторизация через Authorization
+* Возвращает только задачи авторизованного пользователя
+* Response status 200 and body:
+```json
+[
+  {
+      "id": "id_of_task",
+      "title": "title",
+      "description": "description",
+      "status": "status",
+      "finish_date": "finish_date"
+  }
+]
+```
+***
+Получение истории изменения задачи
+---
+* Url: /<int:id>/task_history/
+* Method: GET
+* В Headers необходима авторизация через Authorization
+* Возвращает только задачи авторизованного пользователя
+* Response status 200 and body:
+```json
+[
+  {
+    "id": "id",
+    "task": "task",
+    "note": "note",
+    "time_of_edit": "time_of_edit"
+  }
+]
+```
