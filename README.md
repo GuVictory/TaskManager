@@ -44,7 +44,7 @@ Task manager API
 * Response status 200 and body:
 ```json
 {
-  "token": "hello_token_example",
+  "token": "hello_token_example"
 }
 ```
 * Response status 400 and body:

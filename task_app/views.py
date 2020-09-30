@@ -58,6 +58,9 @@ class TasksViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         try:
             user = Token.objects.get(key=request.auth.key).user
+            all_t = Task.objects.all()
+            all_t = TaskSerializer(all_t, many=True)
+            all_t = all_t.data
             tasks = Task.objects.get(id=pk)
 
             if tasks.creator != user:
@@ -67,7 +70,8 @@ class TasksViewSet(viewsets.ModelViewSet):
             serializer = serializer.data
             return Response(serializer, status=status.HTTP_200_OK)
         except:
-            return Response({"message": "User don't have task with that id"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Error while trying to found task with that id"},
+                            status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, pk=None):
         try:

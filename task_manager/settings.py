@@ -2,15 +2,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = ')m46w-lx4ta6z0p5r75=2f%yd@3291umzf)^ci0i#4a!q@(+qv'
-
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -54,7 +50,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -62,7 +57,7 @@ DATABASES = {
         'USER': 'task_manager_user',
         'PASSWORD': 'task_manager',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 
@@ -71,7 +66,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -88,7 +82,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -98,6 +91,5 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 STATIC_URL = '/static/'
