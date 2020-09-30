@@ -24,4 +24,4 @@ COPY ./entrypoint.sh .
 COPY . .
 
 # run entrypoint.sh
-ENTRYPOINT ["/usr/src/taskmanager/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/taskmanager/entrypoint.prod.sh"]
