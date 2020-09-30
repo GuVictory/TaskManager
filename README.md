@@ -10,17 +10,13 @@ Task manager API
     ```
 2. Выдать права .sh скрипту из дериктории проекта
     ```bash
-    chmod +x ./entrypoint.prod.sh
+    chmod +x ./entrypoint.sh
     ```
 3. Сборка и запуск Docker контейнера
     ```bash
     docker-compose -f docker-compose.prod.yml up -d --build
     ```
     Далее сервис будет доступен по http://localhost:8000/api/
-4. Остановка и удаление
-    ```bash
-    docker-compose down -v
-    ```
 
 Документация к API
 ---
