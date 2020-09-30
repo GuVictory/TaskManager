@@ -1,13 +1,33 @@
 Task manager API
 ===
 
-Основный url для работы с API: http://127.0.0.1:8000/api/
+Инструкция по установке и запуску API в Docker
+---
+1. Клонировать проект с GitHub и перейти в дерикторию проекта
+    ```bash
+    git clone https://github.com/GuVictory/TaskManager.git
+    cd TaskManager
+    ```
+2. Выдать права .sh скрипту из дериктории проекта
+    ```bash
+    chmod +x ./entrypoint.prod.sh
+    ```
+3. Сборка и запуск Docker контейнера
+    ```bash
+    docker-compose -f docker-compose.prod.yml up -d --build
+    ```
+    Далее сервис будет доступен по http://localhost:8000/api/
+4. Остановка и удаление
+    ```bash
+    docker-compose down -v
+    ```
 
-
-Работа с пользвателем
+Документация к API
 ---
 
-### Регистрация:
+### Работа с пользвателем
+
+#### Регистрация:
 * Url: /users/
 * Method: POST
 * Request body:
@@ -31,7 +51,7 @@ Task manager API
 }
 ```
 ***
-### Авторизация
+#### Авторизация
 * Url: /login/
 * Method: POST
 * Request body:
@@ -54,10 +74,9 @@ Task manager API
 }
 ```
 
-Работа с задачами
----
+### Работа с задачами
 
-### Создание задачи
+#### Создание задачи
 * Url: /tasks/
 * Method: POST
 * В Headers необходима авторизация через Authorization
@@ -81,7 +100,7 @@ Task manager API
 }
 ```
 ***
-### Получение списка всех задач
+#### Получение списка всех задач
 * Url: /tasks/
 * Method: GET
 * В Headers необходима авторизация через Authorization
@@ -106,7 +125,7 @@ Task manager API
 ]
 ```
 ***
-### Получение конкретной задачи пользователя по id
+#### Получение конкретной задачи пользователя по id
 * Url: /tasks/<int:id>/
 * Method: GET
 * В Headers необходима авторизация через Authorization
@@ -129,7 +148,7 @@ Task manager API
 }
 ```
 ***
-### Изменение конкретной задачи пользователя по id
+#### Изменение конкретной задачи пользователя по id
 * Url: /tasks/<int:id>/
 * Method: POST/PUT
 * В Headers необходима авторизация через Authorization
@@ -171,6 +190,12 @@ Task manager API
       "message": "Status is not correct!"
 }
 ```
+* Response status 400 and body (в случае указания даты завершения задачи в некорректном формате (не YYYY-MM-DD)):
+```json
+{
+      "message": "Date format is not correct use YYYY-MM-DD"
+}
+```
 * Response status 404 and body:
 ```json
 {
@@ -179,9 +204,9 @@ Task manager API
 ```
 ***
 
-Работа с задачами
----
-### Получение списка всех задач со статусом "Новая"
+### Работа с задачами
+
+#### Получение списка всех задач со статусом "Новая"
 * Url: /new_tasks/
 * Method: GET
 * В Headers необходима авторизация через Authorization
@@ -217,7 +242,7 @@ Task manager API
 ]
 ```
 ***
-### Получение списка всех задач со статусом "в Работе"
+#### Получение списка всех задач со статусом "в Работе"
 * Url: /planned_tasks/
 * Method: GET
 * В Headers необходима авторизация через Authorization
@@ -235,7 +260,7 @@ Task manager API
 ]
 ```
 ***
-### Получение списка всех задач со статусом "Завершённая"
+#### Получение списка всех задач со статусом "Завершённая"
 * Url: /planned_tasks/
 * Method: GET
 * В Headers необходима авторизация через Authorization
@@ -253,7 +278,7 @@ Task manager API
 ]
 ```
 ***
-### Получение списка всех задач отсортированных по возрастанию даты завершения
+#### Получение списка всех задач отсортированных по возрастанию даты завершения
 * Url: /sort_by_date_tasks/
 * Method: GET
 * В Headers необходима авторизация через Authorization
@@ -271,7 +296,7 @@ Task manager API
 ]
 ```
 ***
-### Получение списка всех задач отсортированных по убаванию даты завершения
+#### Получение списка всех задач отсортированных по убаванию даты завершения
 * Url: /sort_by_date_desc_tasks/
 * Method: GET
 * В Headers необходима авторизация через Authorization
@@ -289,8 +314,8 @@ Task manager API
 ]
 ```
 ***
-Получение истории изменения задачи
----
+### Получение истории изменения задачи
+
 * Url: /<int:id>/task_history/
 * Method: GET
 * В Headers необходима авторизация через Authorization

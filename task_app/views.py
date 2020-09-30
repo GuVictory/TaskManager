@@ -1,3 +1,5 @@
+import time
+
 from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
@@ -93,8 +95,13 @@ class TasksViewSet(viewsets.ModelViewSet):
                 task.description = serializer['description']
 
             if 'finish_date' in serializer and serializer['finish_date'] is not None:
-                self.create_history_note(task, 'finish_date', task.finish_date, serializer['finish_date'])
-                task.finish_date = serializer['finish_date']
+                try:
+                    time.strptime(serializer['finish_date'], '%Y-%m-%d')
+                    self.create_history_note(task, 'finish_date', task.finish_date, serializer['finish_date'])
+                    task.finish_date = serializer['finish_date']
+                except ValueError:
+                    return Response({"message": "Date format is not correct use YYYY-MM-DD"},
+                                    status=status.HTTP_400_BAD_REQUEST)
 
             if 'status' in serializer:
                 status_check = len(list(filter(lambda x: x[0] == serializer['status'], Task.STATUS_CHOICES)))

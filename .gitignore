@@ -250,3 +250,6 @@ pip-selfcheck.json
 # End of https://www.toptal.com/developers/gitignore/api/django,python,macos,venv,dotenv
 
 .idea/
+.env.dev
+.docker-compose.yml
+.entrypoint.sh
