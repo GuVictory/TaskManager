@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Task(models.Model):
@@ -27,3 +27,9 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TaskHistory(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, name='task')
+    note = models.TextField(max_length=256, blank=True)
+    time_of_edit = models.DateTimeField(auto_now_add=True)

@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Task
+
+from .models import Task, TaskHistory
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,3 +21,9 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'title', 'description', 'created', 'status', 'finish_date']
+
+
+class TaskHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaskHistory
+        fields = ['id', 'task', 'note', 'time_of_edit']

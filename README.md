@@ -178,3 +178,96 @@ Task manager API
 }
 ```
 ***
+
+Работа с задачами
+---
+### Получение списка всех задач со статусом "Новая"
+* Url: /new_tasks/
+* Method: GET
+* В Headers необходима авторизация через Authorization
+* Возвращает только задачи авторизованного пользователя
+* Response status 200 and body:
+```json
+[
+  {
+      "id": "id_of_task",
+      "title": "title",
+      "description": "description",
+      "status": "New",
+      "finish_date": "finish_date"
+  }
+]
+```
+***
+### Получение списка всех задач со статусом "Запланированная"
+* Url: /planned_tasks/
+* Method: GET
+* В Headers необходима авторизация через Authorization
+* Возвращает только задачи авторизованного пользователя
+* Response status 200 and body:
+```json
+[
+  {
+      "id": "id_of_task",
+      "title": "title",
+      "description": "description",
+      "status": "Planned",
+      "finish_date": "finish_date"
+  }
+]
+```
+***
+### Получение списка всех задач со статусом "в Работе"
+* Url: /planned_tasks/
+* Method: GET
+* В Headers необходима авторизация через Authorization
+* Возвращает только задачи авторизованного пользователя
+* Response status 200 and body:
+```json
+[
+  {
+      "id": "id_of_task",
+      "title": "title",
+      "description": "description",
+      "status": "in Work",
+      "finish_date": "finish_date"
+  }
+]
+```
+***
+### Получение списка всех задач со статусом "Завершённая"
+* Url: /planned_tasks/
+* Method: GET
+* В Headers необходима авторизация через Authorization
+* Возвращает только задачи авторизованного пользователя
+* Response status 200 and body:
+```json
+[
+  {
+      "id": "id_of_task",
+      "title": "title",
+      "description": "description",
+      "status": "Compleated",
+      "finish_date": "finish_date"
+  }
+]
+```
+***
+### Получение списка всех задач отсортированных по возрастанию даты завершения
+* Url: /sort_by_date_tasks/
+* Method: GET
+* В Headers необходима авторизация через Authorization
+* Возвращает только задачи авторизованного пользователя
+* Response status 200 and body:
+```json
+[
+  {
+      "id": "id_of_task",
+      "title": "title",
+      "description": "description",
+      "status": "status",
+      "finish_date": "finish_date"
+  }
+]
+```
+***

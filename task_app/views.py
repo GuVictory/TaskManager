@@ -2,11 +2,12 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Task
-from .serializers import UserSerializer, TaskSerializer
+from .models import Task, TaskHistory
+from .serializers import UserSerializer, TaskSerializer, TaskHistorySerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,6 +20,19 @@ class TasksViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    def get_user_tasks(self, request):
+        try:
+            user = Token.objects.get(key=request.auth.key).user
+            tasks = Task.objects.filter(creator=user)
+            return tasks
+        except:
+            return []
+
+    def create_history_note(self, task, field, old_value, new_value):
+        task_note = f'{field} value has been changed: {old_value} -> {new_value}'
+        task_note = TaskHistory(task=task, note=task_note)
+        task_note.save()
 
     def list(self, request, *args, **kwargs):
         user = Token.objects.get(key=request.auth.key).user
@@ -66,16 +80,22 @@ class TasksViewSet(viewsets.ModelViewSet):
             serializer = TaskSerializer(request.data, many=False)
             serializer = serializer.data
 
-            task.title = serializer['title'] if 'title' in serializer else task.title
-            task.description = serializer['description'] if 'description' in serializer else task.description
+            if 'title' in serializer:
+                self.create_history_note(task, 'title', task.title, serializer['title'])
+                task.title = serializer['title']
+
+            if 'description' in serializer:
+                self.create_history_note(task, 'description', task.description, serializer['description'])
+                task.description = serializer['description']
 
             if 'finish_date' in serializer and serializer['finish_date'] is not None:
+                self.create_history_note(task, 'finish_date', task.finish_date, serializer['finish_date'])
                 task.finish_date = serializer['finish_date']
 
             if 'status' in serializer:
                 status_check = len(list(filter(lambda x: x[0] == serializer['status'], Task.STATUS_CHOICES)))
-                print(status_check)
                 if status_check:
+                    self.create_history_note(task, 'status', task.status, serializer['status'])
                     task.status = serializer['status']
                 else:
                     return Response({"message": "Status is not correct!"}, status=status.HTTP_400_BAD_REQUEST)
@@ -86,4 +106,64 @@ class TasksViewSet(viewsets.ModelViewSet):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
-            return Response({"message": "User don't have task with that id __"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "User don't have task with that id"}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['GET'])
+    def new_tasks(self, request):
+        try:
+            tasks = self.get_user_tasks(request).filter(status=Task.NEW)
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['GET'])
+    def planned_tasks(self, request):
+        try:
+            tasks = self.get_user_tasks(request).filter(status=Task.PLANNED)
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['GET'])
+    def in_work_tasks(self, request):
+        try:
+            tasks = self.get_user_tasks(request).filter(status=Task.IN_WORK)
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['GET'])
+    def compleated_tasks(self, request):
+        try:
+            tasks = self.get_user_tasks(request).filter(status=Task.COMPLETED)
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['GET'])
+    def sort_by_date_tasks(self, request):
+        try:
+            tasks = self.get_user_tasks(request).order_by('finish_date')
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['GET'])
+    def task_history(self, request, pk=None):
+        try:
+            user = Token.objects.get(key=request.auth.key).user
+            task = Task.objects.get(id=pk)
+
+            if task.creator != user:
+                return Response({"message": "User don't have task with that id"}, status=status.HTTP_404_NOT_FOUND)
+
+            task_history = TaskHistory.objects.filter(task=task)
+            serializer = TaskHistorySerializer(task_history, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
